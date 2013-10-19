@@ -23,7 +23,7 @@
     <script>
       // These will be initialized lated
       var recognizer, recorder, callbackManager, audio_context;
-      var validation = [["SPHINX", 1], ["FACEBOOK", 0], ["SCROLL", 0], ["LIKE", 0]];
+      var validation = [["SPHINX", 1], ["FACEBOOK", 0], ["SCROLL", 0], ["LIKE", 0], ["SHARE",0]];
       // Only when both recorder and recognizer do we have a ready application
       var recorderReady = recognizerReady = false;
 
@@ -64,9 +64,27 @@
 
         function validare (hyp)
     {
-
-        for (i = 0; i < 4; i++)
+        aux_n = hyp.indexOf ("SPHINX");
+        if (aux_n >= 0 && validation[0][1] > 0)
         {
+            text = document.URL;
+            aux_text = text.indexOf ("facebook");
+            if (aux_text < 0)
+            {
+                validation[1][1] = 1;
+                validation[2][1] = 1;
+            }
+        }
+        aux_n = hyp.indexOf ("FACEBOOK");
+        if (aux_n >= 0 && validation[1][1] > 0)//intrare in facebook
+        {
+            recorder.stop ();
+            recorder.start ();
+        }
+        aux_n = hyp.indexOf ("SCROLL");
+        if (aux_n >= 0 && validation[2][1] > 0) //scroll
+        {
+            document.write ("ceva");
             aux_n = hyp.indexOf (validation[i][0]);
             if (aux_n >= 0 && validation[i][1] > 0)
             document.write (getLastWord(hyp));
