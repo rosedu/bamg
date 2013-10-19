@@ -55,6 +55,12 @@
         validare (hyp);
       };
     
+      function getLastWord(hyp) {
+        var index = hyp.split("").reverse().join("").indexOf(" ");
+        var aux = hyp.split("").reverse().join("").substring(0, index);
+        aux = aux.split("").reverse().join("");
+        return aux;
+      }
 
         function validare (hyp)
     {
@@ -63,7 +69,7 @@
         {
             aux_n = hyp.indexOf (validation[i][0]);
             if (aux_n >= 0 && validation[i][1] > 0)
-                document.write ("ma-ta");
+            document.write (getLastWord(hyp));
         }
     }
       // This updates the UI when the app might get ready
