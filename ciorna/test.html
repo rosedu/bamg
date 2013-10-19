@@ -23,7 +23,7 @@
     <script>
       // These will be initialized lated
       var recognizer, recorder, callbackManager, audio_context;
-      var validation = [["SPHINX", 1], ["FACEBOOK", 0], ["SCROLL", 0], ["LIKE", 0], ["SHARE", 0], ["SEARCH", 0]];
+      var validation = [["SPHINX", 1], ["FACEBOOK", 0], ["SCROLL", 0], ["LIKE", 0], ["SHARE", 0], ["SEARCH", 0], ["PHOTOS", 0]];
       // Only when both recorder and recognizer do we have a ready application
       var recorderReady = recognizerReady = false;
 
@@ -62,7 +62,7 @@
         return aux;
       }
 
-        function confirmation(hyp) {
+/*        function confirmation(hyp) {
             var now = new Date();
             var begin = now;
             recorder.stop ();
@@ -79,7 +79,7 @@
             }
             recorder.start ('1');
             return 0;
-        }
+        }*/
 
        function validare (hyp)
        {
@@ -87,14 +87,61 @@
         if (aux_n >= 0 && validation[0][1] > 0)
         {
             context_generator (hyp, "SPHINX");
+            recorder.stop ();
+            recorder.start ();
         }
+        
         aux_n = hyp.indexOf ("FACEBOOK");
         if (aux_n >= 0 && validation[1][1] > 0)
         {
-            var proceed = confirmation(hyp);
-            if (proceed > 0) {
-                context_generator (hyp, "FACEBOOK");
-            }
+            context_generator (hyp, "FACEBOOK");
+            recorder.stop ();
+            recorder.start ();
+
+        }
+        
+        aux_n = hyp.indexOf ("SCROLL");
+        if (aux_n >= 0 && validation [2][1] > 0)
+        {
+            context_generator (hyp, "SCROLL");
+            recorder.stop ();
+            recorder.start ();
+        }
+        
+        aux_n = hyp.indexOf ("LIKE");
+        if (aux_n >= 0 && validation [3][1] > 0)
+        {
+            context_generator (hyp, "LIKE");
+            recorder.stop ();
+            recorder.start ();
+
+        }
+
+        aux_n = hyp.indexOf ("SHARE");
+        if (aux_n >= 0 && validation [4][1] > 0)
+        {
+            context_generator (hyp, "SHARE");
+            recorder.stop ();
+            recorder.start ();
+
+        }
+
+        aux_n = hyp.indexOf ("SEARCH");
+        if (aux_n >= 0 && validation [5][1] > 0)
+        {
+            context_generator (hyp, "SEARCH");
+            recorder.stop ();
+            recorder.start ();
+
+        }
+
+        aux_n = hyp.indexOf ("PHOTOS");
+        if (aux_n >= 0 && validation [6][1] > 0)
+        {
+            context_generator (hyp, "PHOTOS");
+            recorder.stop ();
+            recorder.start ();
+
         }
        }
 
@@ -102,6 +149,7 @@
         {
             text = document.URL;
             aux_text = text.indexOf ("facebook");
+            
             if ("SPHINX" == command && aux_text < 0)//sphinx fara facebook
             {
                 validation[1][1] = 1;
@@ -109,22 +157,85 @@
                 validation[3][1] = 0;
                 validation[4][1] = 0;
                 validation[5][1] = 0;
+                validation[6][1] = 0
             }
+            
             else if ("SPHINX" == command)//sphinx cu facebook
             {
                 validation[2][1] = 1;
                 validation[3][1] = 1;
                 validation[4][1] = 1;
                 validation[5][1] = 1;
-                validation[1][1] = 0;
+                validation[1][1] = 1;
+                validation[6][1] = 0
             }
+
+            aux_text = text.indexOf ("photo");
+            if (aux_text >= 0)
+            {
+                validation[1][1] = 1;
+                validation[2][1] = 0;
+                validation[3][1] = 1;
+                validation[4][1] = 1;
+                validation[5][1] = 0;
+                validation[6][1] = 0;
+            }
+            
+            aux_text = text.indexOf ("photos");
+            if (aux_text >= 0)
+            {
+                validation[1][1] = 1;
+                validation[2][1] = 1;
+                validation[3][1] = 0;
+                validation[4][1] = 0;
+                validation[5][1] = 0;
+                validation[6][1] = 0;
+            }
+
+            aux_text = text.indexOf ("mihai");
+            if (aux_text >= 0)
+            {
+                validation[1][1] = 1;
+                validation[2][1] = 1;
+                validation[3][1] = 0;
+                validation[4][1] = 0;
+                validation[5][1] = 0;
+                validation[6][1] = 0;
+            }
+
+            
             if ("FACEBOOK" == command)//facebook
             {
                 validation[2][1] = 1;
                 validation[3][1] = 1;
                 validation[4][1] = 1;
                 validation[5][1] = 1;
-                validation[1][1] = 0;
+                validation[1][1] = 1;
+                validation[6][1] = 0;
+            }
+            
+            if ("SCROLL" == command) //scroll
+            {
+                validation[6][1] = 0;
+            }
+
+            if ("LIKE" == command) //like
+            {
+                validation[6][1] = 0;
+            }
+
+            if ("SHARE" == command) // share
+            {
+                validation[6][1] = 0;
+            }
+
+            if ("SEARCH" == command) // search
+            {
+                validation[6][1] = 0;
+            }
+            if ("PHOTOS" == command)
+            {
+                validation[6][1] = 0;
             }
         }
 
