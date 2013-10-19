@@ -11,7 +11,7 @@
   },
   "background": { "scripts": ["background.js"] },
   "content_scripts": [
-    { "matches": ["https://www.facebook.com/*"], "js": ["test.js", "jquery.js"] }
+    { "matches": ["https://www.facebook.com/*"], "js": ["test.js", "jquery.js", "scrollto.js"] }
   ],
   "permissions": [
     "alarms",
