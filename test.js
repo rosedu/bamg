@@ -33,35 +33,6 @@ window.onload = function(e) {
 		//setTimeout(setColor(msg.color),1000);
 		// console.log("color set");
 	});
-	var where = document.URL.split(".com/")[1];
-	if (where != "") {
-		where_next = where.split("/");
-		user = where.split("?");
-	}
-	if (where == "") {
-		console.log("news feed");
-	}
-	else {
-		if (where_next[0] == where) {
-			console.log("on user: " + user[0]);
-		}
-		else {
-			switch (where_next[0]) {
-				case "events":
-					console.log("on events");
-					break;
-				case "messages":
-					console.log("on messages");
-					break;
-				case "groups":
-					console.log("on a group");
-					break;
-				default:
-					console.log("on user: " + where_next[1]);
-			}
-		}
-	}
-	
 	console.log("done");
 
 }
