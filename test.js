@@ -26,18 +26,78 @@
 window.onload = function(e) {
 	var port = chrome.runtime.connect( {name: "sphinxChannel"});
 	port.postMessage({state: "ready"});
-	console.log("msg sent");
+	// console.log("msg sent");
 	port.onMessage.addListener(function(msg) {
 		setColor(msg.color);
-		//setTimeout(setColor(msg.color),1000);
-		console.log("color set");
-	});
 
+		//setTimeout(setColor(msg.color),1000);
+		// console.log("color set");
+	});
+	var where = document.URL.split(".com/")[1];
+	if (where != "") {
+		where_next = where.split("/");
+		user = where.split("?");
+	}
+	if (where == "") {
+		console.log("news feed");
+	}
+	else {
+		if (where_next[0] == where) {
+			console.log("on user: " + user[0]);
+		}
+		else {
+			switch (where_next[0]) {
+				case "events":
+					console.log("on events");
+					break;
+				case "messages":
+					console.log("on messages");
+					break;
+				case "groups":
+					console.log("on a group");
+					break;
+				default:
+					console.log("on user: " + where_next[1]);
+			}
+		}
+	}
+	
 	console.log("done");
 
 }
 
 function setColor(color) {
-	console.log("in color:" + color);
+	// console.log("in color:" + color);
 	document.getElementsByClassName("navHeader")[0].style.color = color;
+}
+
+function getURL() {
+	var where = document.URL.split(".com/")[1];
+	if (where != "") {
+		where_next = where.split("/");
+		user = where.split("?");
+	}
+	if (where == "") {
+		console.log("news feed");
+	}
+	else {
+		if (where_next[0] == where) {
+			console.log("on user: " + user[0]);
+		}
+		else {
+			switch (where_next[0]) {
+				case "events":
+					console.log("on events");
+					break;
+				case "messages":
+					console.log("on messages");
+					break;
+				case "groups":
+					console.log("on a group");
+					break;
+				default:
+					console.log("on user: " + where_next[1]);
+			}
+		}
+	}
 }
