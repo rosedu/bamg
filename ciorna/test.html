@@ -23,7 +23,7 @@
     <script>
       // These will be initialized lated
       var recognizer, recorder, callbackManager, audio_context;
-      var validation = [["SPHINX", 1], ["FACEBOOK", 0], ["SCROLL", 0], ["LIKE", 0], ["SHARE",0]];
+      var validation = [["SPHINX", 1], ["FACEBOOK", 0], ["SCROLL", 0], ["LIKE", 0], ["SHARE", 0], ["SEARCH", 0]];
       // Only when both recorder and recognizer do we have a ready application
       var recorderReady = recognizerReady = false;
 
@@ -62,34 +62,72 @@
         return aux;
       }
 
-        function validare (hyp)
-    {
+        function confirmation(hyp) {
+            var now = new Date();
+            var begin = now;
+            recorder.stop ();
+            recorder.start ('0');
+            while (now - begin < 5000) {
+                now = new Date();
+                output.innerHTML = hyp;
+            }
+            recorder.stop();
+            var aux_n = hyp.indexOf("YES");
+            if (aux_n > 0) {
+                recorder.start ('1');
+                return 1;
+            }
+            recorder.start ('1');
+            return 0;
+        }
+
+       function validare (hyp)
+       {
         aux_n = hyp.indexOf ("SPHINX");
         if (aux_n >= 0 && validation[0][1] > 0)
         {
+            context_generator (hyp, "SPHINX");
+        }
+        aux_n = hyp.indexOf ("FACEBOOK");
+        if (aux_n >= 0 && validation[1][1] > 0)
+        {
+            var proceed = confirmation(hyp);
+            if (proceed > 0) {
+                context_generator (hyp, "FACEBOOK");
+            }
+        }
+       }
+
+        function context_generator (hyp, command)
+        {
             text = document.URL;
             aux_text = text.indexOf ("facebook");
-            if (aux_text < 0)
+            if ("SPHINX" == command && aux_text < 0)//sphinx fara facebook
             {
                 validation[1][1] = 1;
                 validation[2][1] = 1;
+                validation[3][1] = 0;
+                validation[4][1] = 0;
+                validation[5][1] = 0;
+            }
+            else if ("SPHINX" == command)//sphinx cu facebook
+            {
+                validation[2][1] = 1;
+                validation[3][1] = 1;
+                validation[4][1] = 1;
+                validation[5][1] = 1;
+                validation[1][1] = 0;
+            }
+            if ("FACEBOOK" == command)//facebook
+            {
+                validation[2][1] = 1;
+                validation[3][1] = 1;
+                validation[4][1] = 1;
+                validation[5][1] = 1;
+                validation[1][1] = 0;
             }
         }
-        aux_n = hyp.indexOf ("FACEBOOK");
-        if (aux_n >= 0 && validation[1][1] > 0)//intrare in facebook
-        {
-            recorder.stop ();
-            recorder.start ();
-        }
-        aux_n = hyp.indexOf ("SCROLL");
-        if (aux_n >= 0 && validation[2][1] > 0) //scroll
-        {
-            document.write ("ceva");
-            aux_n = hyp.indexOf (validation[i][0]);
-            if (aux_n >= 0 && validation[i][1] > 0)
-            document.write (getLastWord(hyp));
-        }
-    }
+
       // This updates the UI when the app might get ready
       // Only when both recorder and recognizer are ready do we enable the buttons
       function updateUI() {
@@ -241,7 +279,7 @@
        // This is the list of words that need to be added to the recognizer
        // This follows the CMU dictionary format
 //      var wordList = [["ONE", "W AH N"], ["TWO", "T UW"], ["THREE", "TH R IY"], ["FOUR", "F AO R"], ["FIVE", "F AY V"], ["SIX", "S IH K S"], ["SEVEN", "S EH V AH N"], ["EIGHT", "EY T"], ["NINE", "N AY N"], ["ZERO", "Z IH R OW"], ["NEW-YORK", "N UW Y AO R K"], ["NEW-YORK-CITY", "N UW Y AO R K S IH T IY"], ["PARIS", "P AE R IH S"] , ["PARIS(2)", "P EH R IH S"], ["SHANGHAI", "SH AE NG HH AY"], ["SAN-FRANCISCO", "S AE N F R AE N S IH S K OW"], ["LONDON", "L AH N D AH N"], ["BERLIN", "B ER L IH N"], ["SUCKS", "S AH K S"], ["ROCKS", "R AA K S"], ["IS", "IH Z"], ["NOT", "N AA T"], ["GOOD", "G IH D"], ["GOOD(2)", "G UH D"], ["GREAT", "G R EY T"], ["WINDOWS", "W IH N D OW Z"], ["LINUX", "L IH N AH K S"], ["UNIX", "Y UW N IH K S"], ["MAC", "M AE K"], ["AND", "AE N D"], ["AND(2)", "AH N D"], ["O", "OW"], ["S", "EH S"], ["X", "EH K S"]];
-var wordList = [["ABANDON", "AH B AE N D AH N"], ["BEACH", "B IY CH"], ["BEHAVE", "B IH HH EY V"], ["LIKE_THIS", "L AY K DH IH S"], ["FACEBOOK", "F EY S B UH K"], ["SCROLL", "S K R OW L"], ["SEARCH", "S ER CH"], ["NEXT", "N EH K S"], ["PREVIOUS", "P R IY V IY AH S"], ["MARBLE", "M AA R B AH L"], ["NUMBER", "N AH M B ER"], ["SPHINX", "S F IH NG K S"], ["HELLO", "HH AH L OW"], ["MIZAR", "M AY Z AA R"], ["POLARIS", "P OW L EH R AH S"], ["POLICE", "P AH L IY S"], ["POISON", "P OY Z AH N"], ["MESSAGES", "M EH S AH JH AH Z"], ["EVENTS", "IH V EH N T S"], ["PHOTOS", "F OW T OW Z"], ["METALLICA", "M AH T AE L IH K AH"], ["GEORGIANA", "JH AO R JH IY AE N AH"], ["MIHAI", "M IY HH AY"], ["BOGDAN", "B AA G D AH N"], ["ALEXANDER", "AE L AH G Z AE N D ER"], ["ELENA", "EH L AH N AH"], ["VARGA", "V AA R G AH"], ["VOLMER", "V OW L M ER"]];
+var wordList = [["ABANDON", "AH B AE N D AH N"], ["BEACH", "B IY CH"], ["BEHAVE", "B IH HH EY V"], ["LIKE_THIS", "L AY K DH IH S"], ["FACEBOOK", "F EY S B UH K"], ["SCROLL", "S K R OW L"], ["SEARCH", "S ER CH"], ["NEXT", "N EH K S"], ["PREVIOUS", "P R IY V IY AH S"], ["MARBLE", "M AA R B AH L"], ["NUMBER", "N AH M B ER"], ["SPHINX", "S F IH NG K S"], ["HELLO", "HH AH L OW"], ["MIZAR", "M AY Z AA R"], ["POLARIS", "P OW L EH R AH S"], ["POLICE", "P AH L IY S"], ["POISON", "P OY Z AH N"], ["MESSAGES", "M EH S AH JH AH Z"], ["EVENTS", "IH V EH N T S"], ["PHOTOS", "F OW T OW Z"], ["METALLICA", "M AH T AE L IH K AH"], ["GEORGIANA", "JH AO R JH IY AE N AH"], ["MIHAI", "M IY HH AY"], ["BOGDAN", "B AA G D AH N"], ["ALEXANDER", "AE L AH G Z AE N D ER"], ["ELENA", "EH L AH N AH"], ["VARGA", "V AA R G AH"], ["VOLMER", "V OW L M ER"], ["YES", "Y EH S"], ["NO", "N OW"]];
 
       // This grammar recognizes digits
 //      var grammarDigits = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "ONE"},{from: 0, to: 0, word: "TWO"},{from: 0, to: 0, word: "THREE"},{from: 0, to: 0, word: "FOUR"},{from: 0, to: 0, word: "FIVE"},{from: 0, to: 0, word: "SIX"},{from: 0, to: 0, word: "SEVEN"},{from: 0, to: 0, word: "EIGHT"},{from: 0, to: 0, word: "NINE"},{from: 0, to: 0, word: "ZERO"}]};
@@ -253,7 +291,8 @@ var wordList = [["ABANDON", "AH B AE N D AH N"], ["BEACH", "B IY CH"], ["BEHAVE"
 //      var grammarProba = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "DISPLAY"}]};
 //      var grammarProba = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "ONE"},{from: 0, to: 0, word: "TWO"},{from: 0, to: 0, word: "THREE"},{from: 0, to: 0, word: "FOUR"},{from: 0, to: 0, word: "FIVE"},{from: 0, to: 0, word: "SIX"},{from: 0, to: 0, word: "SEVEN"},{from: 0, to: 0, word: "EIGHT"},{from: 0, to: 0, word: "NINE"},{from: 0, to: 0, word: "ZERO"},{from: 0, to: 0, word: "NEW-YORK"}, {from: 0, to: 0, word: "NEW-YORK-CITY"}, {from: 0, to: 0, word: "PARIS"}, {from: 0, to: 0, word: "SHANGHAI"}, {from: 0, to: 0, word: "SAN-FRANCISCO"}, {from: 0, to: 0, word: "LONDON"}, {from: 0, to: 0, word: "BERLIN"}]};
 var grammarProba = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "ABANDON"}, {from: 0, to: 0, word: "BEACH"}, {from: 0, to: 0, word: "BEHAVE"}, {from: 0, to: 0, word: "LIKE_THIS"}, {from: 0, to: 0, word: "FACEBOOK"}, {from: 0, to: 0, word: "SCROLL"}, {from: 0, to: 0, word: "SEARCH"}, {from: 0, to: 0, word: "NEXT"}, {from: 0, to: 0, word: "PREVIOUS"}, {from: 0, to: 0, word: "MARBLE"}, {from: 0, to: 0, word: "NUMBER"}, {from: 0, to: 0, word: "SPHINX"}, {from: 0, to: 0, word: "HELLO"}, {from: 0, to: 0, word: "MIZAR"}, {from: 0, to: 0, word: "POLARIS"}, {from: 0, to: 0, word: "POLICE"}, {from: 0, to: 0, word: "POISON"}, {from: 0, to: 0, word: "MESSAGES"}, {from: 0, to: 0, word: "EVENTS"}, {from: 0, to: 0, word: "PHOTOS"}, {from: 0, to: 0, word: "METALLICA"}, {from: 0, to: 0, word: "GEORGIANA"}, {from: 0, to: 0, word: "MIHAI"}, {from: 0, to: 0, word: "BOGDAN"}, {from: 0, to: 0, word: "ALEXANDER"}, {from: 0, to: 0, word: "ELENA"}, {from: 0, to: 0, word: "VARGA"}, {from: 0, to: 0, word: "VOLMER"}]};
-      var grammars = [{title: "proba", g: grammarProba}];
+var grammarConfirm = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "YES"}, {from: 0, to: 0, word: "NO"}]};
+var grammars = [{title: "confirm", g:grammarConfirm}, {title: "proba", g: grammarProba}];
       var grammarIds = [];
     </script>
     <!-- These are the two JavaScript files you must load in the HTML,
