@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+
+  "name": "Facebook Voice Control",
+  "description": "This extension allows you to vocally manipulate your Facebook page",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "logo_charcoal.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "https://secure.flickr.com/"
+  ]
+}
