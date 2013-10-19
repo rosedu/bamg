@@ -23,6 +23,7 @@
     <script>
       // These will be initialized lated
       var recognizer, recorder, callbackManager, audio_context;
+      var validation = [["SPHINX", 1], ["FACEBOOK", 0], ["SCROLL", 0], ["LIKE", 0]];
       // Only when both recorder and recognizer do we have a ready application
       var recorderReady = recognizerReady = false;
 
@@ -48,13 +49,23 @@
       // To display the hypothesis sent by the recognizer
       function updateHyp(hyp) {
         output.innerHTML = hyp;
-        var aux_n=hyp.indexOf ("HELLO");
+    /*    var aux_n = hyp.indexOf (validation[0][0]);
         if (aux_n >= 0)
-        {
-            document.write ('ma-ta');
-        }
+            document.write ("ma-ta");*/
+        validare (hyp);
       };
+    
 
+        function validare (hyp)
+    {
+
+        for (i = 0; i < 4; i++)
+        {
+            aux_n = hyp.indexOf (validation[i][0]);
+            if (aux_n >= 0 && validation[i][1] > 0)
+                document.write ("ma-ta");
+        }
+    }
       // This updates the UI when the app might get ready
       // Only when both recorder and recognizer are ready do we enable the buttons
       function updateUI() {
@@ -170,7 +181,6 @@
                   var newHyp = e.data.hyp;
                   if (e.data.hasOwnProperty('final') &&  e.data.final)
                   newHyp = "Final: " + newHyp;
-                  newHyp = newHyp + "te rog";
                   updateHyp(newHyp);
                 }
                 // This is the case when we have an error
