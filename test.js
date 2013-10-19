@@ -19,40 +19,23 @@
 	//location.href='https://facebook.com/groups/' + ending;
 	
 // $(".mainWrapper").eq(0).find('div a:first').attr('href')
+
+// $(".uiMediaThumb._6i9.uiMediaThumbMedium").get(0).click();
+// $(".closeTheater").get(0).click()  // zoom in and out of photos
+
 window.onload = function(e) {
-	// var port = chrome.runtime.connect( {name: "sphinxChannel"});
-	// port.postMessage({state: "ready"});
-	// console.log("msg sent");
-	// port.onMessage.addListener(function(msg) {
-	// 	setColor(msg.color);
-	// 	//setTimeout(setColor(msg.color),1000);
-	// 	console.log("color set");
-	// });
+	var port = chrome.runtime.connect( {name: "sphinxChannel"});
+	port.postMessage({state: "ready"});
+	console.log("msg sent");
+	port.onMessage.addListener(function(msg) {
+		setColor(msg.color);
+		//setTimeout(setColor(msg.color),1000);
+		console.log("color set");
+	});
 
-
-	// console.log( $(".actorDescription.actorName").get(3));
-	// console.log($(".actorDescription.actorName").eq(0).children().first().attr('href'));
-	console.log($(".mainWrapper").eq(0).find('div a:first').attr('href'));
-	console.log($(".mainWrapper").eq(1).find('div a:first').attr('href'));
-	console.log($(".mainWrapper").eq(2).find('div a:first').attr('href'));
-	console.log($(".mainWrapper").eq(1));
-	console.log($(".mainWrapper").eq(2));
-	// console.log($("#ll").find['href']);
-
-
-	// // var frame = $(".mainWrapper").get(1);
-	// console.log($(".UFILikeLink").get(0));
-	// console.log($(".UFILikeLink").get(0).click());
-	// console.log($(".UFILikeLink").get(2));
-	// console.log($(".UFILikeLink").get(3));
 	console.log("done");
 
 }
-
-
-
-
-
 
 function setColor(color) {
 	console.log("in color:" + color);
