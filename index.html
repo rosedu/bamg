@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <title>
+      Yay!
+    </title>
+  </head>
+  <body>
+    This is the index page.
+    <a href="javascript:(
+  function() {
+    var remote = window.open('remote.html', '', 'height=500,width=200');
+    remote.parentPage = this.window;
+  }
+)();">Drag me to the bookmark bar!</a>
+  </body>
+</html>
