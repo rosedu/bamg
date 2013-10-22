@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>PocketSphinx.js</title>
+  </head>
+  <body>
+    <h2>PocketSphinx.js live demo</h2>
+    <ul>
+      <li>This demo works on Chrome with the Web Audio API, make sure it works for you and actually records audio (audio recording on Chrome does not work well on all configs).</li>
+      <li>Press "Start" and speak</li>
+    </ul>
+    <p id="grammars"></p>
+    <button id="startBtn">Start</button>
+    <button id="stopBtn">Stop</button>
+    <span id="recording-indicator" style="border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; width: 20px; height: 20px; background: red;"></span>
+    <h2>Recognition Output</h2>
+    <div id="output" style="height:150px;overflow:auto;" >
+    </div>
+    <h2>Status</h2>
+    <div id="current-status">Loading page</div>
+
+    <script>
+      // These will be initialized lated
+      var recognizer, recorder, callbackManager, audio_context;
+      var validation = [["SPHINX", 1], ["FACEBOOK", 0], ["DOWN", 0], ["LIKE", 0], ["SHARE", 0], ["SEARCH", 0], ["PHOTOS", 0], ["UP", 0], ["FIRST_GROUP", 0], ["SECOND_GROUP", 0], ["THIRD_GROUP", 0], ["EVENTS", 0]];
+      // Only when both recorder and recognizer do we have a ready application
+      var recorderReady = recognizerReady = false;
+
+      // A convenience function to post a message to the recognizer and associate
+      // a callbac to its response
+      function postRecognizerJob(message, callback) {
+        var msg = message || {};
+        if(callbackManager) msg.callbackId = callbackManager.add(callback);
+        if (recognizer) recognizer.postMessage(msg);
+      };
+
+      // This function initializes an instance of the recorder
+      // it posts a message right away and calls onReady when it
+      // is ready so that onmessage can be properly set
+      function spawnWorker(workerurl, onReady) {
+          recognizer = new Worker(workerurl);
+          recognizer.onmessage = function(event) {
+            onReady(recognizer);
+          };
+          recognizer.postMessage({});
+      };
+
+      // To display the hypothesis sent by the recognizer
+      function updateHyp(hyp) {
+        output.innerHTML = hyp;
+    /*    var aux_n = hyp.indexOf (validation[0][0]);
+        if (aux_n >= 0)
+            document.write ("ma-ta");*/
+        validare (hyp);
+      };
+    
+      function getLastWord(hyp) {
+        var index = hyp.split("").reverse().join("").indexOf(" ");
+        var aux = hyp.split("").reverse().join("").substring(0, index);
+        aux = aux.split("").reverse().join("");
+        return aux;
+      }
+
+/*        function confirmation(hyp) {
+            var now = new Date();
+            var begin = now;
+            recorder.stop ();
+            recorder.start ('0');
+            while (now - begin < 5000) {
+                now = new Date();
+                output.innerHTML = hyp;
+            }
+            recorder.stop();
+            var aux_n = hyp.indexOf("YES");
+            if (aux_n > 0) {
+                recorder.start ('1');
+                return 1;
+            }
+            recorder.start ('1');
+            return 0;
+        }*/
+
+       function validare (hyp)
+       {
+        aux_n = hyp.indexOf ("SPHINX");
+        if (aux_n >= 0 && validation[0][1] > 0)
+        {
+            context_generator (hyp, "SPHINX");
+            recorder.stop ();
+            recorder.start ();
+        }
+        
+        aux_n = hyp.indexOf ("FACEBOOK");
+        if (aux_n >= 0 && validation[1][1] > 0)
+        {
+            context_generator (hyp, "FACEBOOK");
+            recorder.stop ();
+            recorder.start ();
+
+        }
+        
+        aux_n = hyp.indexOf ("DOWN");
+        if (aux_n >= 0 && validation [2][1] > 0)
+        {
+            context_generator (hyp, "DOWN");
+            recorder.stop ();
+            recorder.start ();
+        }
+        
+        aux_n = hyp.indexOf ("LIKE");
+        if (aux_n >= 0 && validation [3][1] > 0)
+        {
+            context_generator (hyp, "LIKE");
+            recorder.stop ();
+            recorder.start ();
+
+        }
+
+        aux_n = hyp.indexOf ("SHARE");
+        if (aux_n >= 0 && validation [4][1] > 0)
+        {
+            context_generator (hyp, "SHARE");
+            recorder.stop ();
+            recorder.start ();
+
+        }
+
+        /*aux_n = hyp.indexOf ("SEARCH");
+        if (aux_n >= 0 && validation [5][1] > 0)
+        {
+            context_generator (hyp, "SEARCH");
+            recorder.stop ();
+            recorder.start ();
+
+        }*/
+
+        aux_n = hyp.indexOf ("PHOTOS");
+        if (aux_n >= 0 && validation [6][1] > 0)
+        {
+            context_generator (hyp, "PHOTOS");
+            recorder.stop ();
+            recorder.start ();
+
+        }
+
+        aux_n = hyp.indexOf ("UP");
+        if (aux_n >= 0 && validation [7][1] > 0)
+        {
+            context_generator (hyp, "UP");
+            recorder.stop ();
+            recorder.start ();
+        }
+
+        aux_n = hyp.indexOf ("FIRST_GROUP");
+        if (aux_n >= 0 && validation[8][1] > 0)
+        {
+            context_generator (hyp, "FIRST_GROUP");
+            recorder.stop ();
+            recorder.start ();
+        }
+
+        aux_n = hyp.indexOf ("SECOND_GROUP");
+        if (aux_n >= 0 && validation[9][1] > 0)
+        {
+            context_generator (hyp, "SECOND_GROUP");
+            recorder.stop ();
+            recorder.start ();
+        }
+
+        aux_n = hyp.indexOf ("THIRD_GROUP");
+        if (aux_n >= 0 && validation[9][1] > 0)
+        {
+            context_generator (hyp, "THIRD_GROUP");
+            recorder.stop ();
+            recorder.start ();
+        }
+
+        aux_n = hyp.indexOf ("EVENTS");
+        if (aux_n >= 0 && validation[10][1] > 0)
+        {
+            context.generator (hyp, "EVENTS");
+            recorder.stop ();
+            recorder.start ();
+        }
+       }
+
+        function context_generator (hyp, command)
+        {
+            text = document.URL;
+            aux_text = text.indexOf ("facebook");
+            
+            if ("SPHINX" == command && aux_text < 0)//sphinx fara facebook
+            {
+                validation[1][1] = 1;
+                validation[2][1] = 1;
+                validation[3][1] = 0;
+                validation[4][1] = 0;
+                validation[5][1] = 0;
+                validation[6][1] = 0
+            }
+            
+            else if ("SPHINX" == command)//sphinx cu facebook
+            {
+                validation[2][1] = 1;
+                validation[3][1] = 1;
+                validation[4][1] = 1;
+                validation[5][1] = 1;
+                validation[1][1] = 1;
+                validation[6][1] = 0
+            }
+
+            aux_text = text.indexOf ("photo");
+            if (aux_text >= 0)
+            {
+                validation[1][1] = 1;
+                validation[2][1] = 0;
+                validation[3][1] = 1;
+                validation[4][1] = 1;
+                validation[5][1] = 0;
+                validation[6][1] = 0;
+            }
+            
+            aux_text = text.indexOf ("photos");
+            if (aux_text >= 0)
+            {
+                validation[1][1] = 1;
+                validation[2][1] = 1;
+                validation[3][1] = 0;
+                validation[4][1] = 0;
+                validation[5][1] = 0;
+                validation[6][1] = 0;
+            }
+
+            aux_text = text.indexOf ("mihai");
+            if (aux_text >= 0)
+            {
+                validation[1][1] = 1;
+                validation[2][1] = 1;
+                validation[3][1] = 0;
+                validation[4][1] = 0;
+                validation[5][1] = 0;
+                validation[6][1] = 0;
+            }
+
+            
+            if ("FACEBOOK" == command)//facebook
+            {
+                validation[2][1] = 1;
+                validation[3][1] = 1;
+                validation[4][1] = 1;
+                validation[5][1] = 1;
+                validation[1][1] = 1;
+                validation[6][1] = 0;
+            }
+            
+            if ("DOWN" == command) //scroll
+            {
+                validation[6][1] = 0;
+            }
+
+            if ("LIKE" == command) //like
+            {
+                validation[6][1] = 0;
+            }
+
+            if ("SHARE" == command) // share
+            {
+                validation[6][1] = 0;
+            }
+
+          /*  if ("SEARCH" == command) // search
+            {
+                validation[6][1] = 0;
+            }*/
+            if ("PHOTOS" == command)
+            {
+                validation[6][1] = 0;
+            }
+
+            if ("UP" == command)
+            {
+                validation[6][1] = 0;
+            }
+
+            if ("FIRST_GROUP" == command)
+            {
+                validation[6][1] = 0;
+            }
+
+            if ("SECOND_GROUP" == command)
+            {
+                validation[6][1] = 0;
+            }
+
+            if ("THIRD_GROUP" == command)
+            {
+                validation[6][1] = 0;
+            }
+
+            if ("EVENTS" == command)
+            {
+                validation[6][1] = 0;
+            }
+        }
+
+      // This updates the UI when the app might get ready
+      // Only when both recorder and recognizer are ready do we enable the buttons
+      function updateUI() {
+        if (recorderReady && recognizerReady) startBtn.disabled = stopBtn.disabled = false;
+      };
+
+      // This is just a logging window where we display the status
+      function updateStatus(newStatus) {
+        document.getElementById('current-status').innerHTML += "<br/>" + newStatus;
+      };
+
+      // A not-so-great recording indicator
+      function displayRecording(display) {
+        if (display) document.getElementById('recording-indicator').innerHTML = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+        else document.getElementById('recording-indicator').innerHTML = "";
+      };
+
+      // Callback function once the user authorises access to the microphone
+      // in it, we instanciate the recorder
+      function startUserMedia(stream) {
+        var input = audio_context.createMediaStreamSource(stream);
+        var audioRecorderConfig = {errorCallback: function(x) {updateStatus("Error from recorder: " + x);}};
+        recorder = new AudioRecorder(input, audioRecorderConfig);
+        // If a recognizer is ready, we pass it to the recorder
+        if (recognizer) recorder.recognizer = recognizer;
+        recorderReady = true;
+        updateUI();
+        updateStatus("Audio recorder ready");
+      };
+
+      // This starts recording. We first need to get the id of the grammar to use
+      var startRecording = function() {
+        var id = document.getElementById('grammars').value;
+        if (recorder && recorder.start(id)) displayRecording(true);
+      };
+
+      // Stops recording
+      var stopRecording = function() {
+        recorder && recorder.stop();
+        displayRecording(false);
+      };
+
+      // Called once the recognizer is ready
+      // We then add the grammars to the input select tag and update the UI
+      var recognizerReady = function() {
+           updateGrammars();
+           recognizerReady = true;
+           updateUI();
+           updateStatus("Recognizer ready");
+      };
+
+      // We get the grammars defined below and fill in the input select tag
+      var updateGrammars = function() {
+        var selectTag = document.getElementById('grammars');
+        for (var i = 0 ; i < grammarIds.length ; i++) {
+            var newElt = document.createElement('option');
+            newElt.value=grammarIds[i].id;
+            newElt.innerHTML = grammarIds[i].title;
+            selectTag.appendChild(newElt);
+        }                          
+      };
+
+      // This adds a grammar from the grammars array
+      // We add them one by one and call it again as
+      // a callback.
+      // Once we are done adding all grammars, we can call
+      // recognizerReady()
+      var feedGrammar = function(g, index, id) {
+        if (id && (grammarIds.length > 0)) grammarIds[0].id = id.id;
+        if (index < g.length) {
+          grammarIds.unshift({title: g[index].title})
+          postRecognizerJob({command: 'addGrammar', data: g[index].g},
+                             function(id) {feedGrammar(grammars, index + 1, {id:id});});
+        } else {
+          recognizerReady();
+        }
+      };
+
+      // This adds words to the recognizer. When it calls back, we add grammars
+      var feedWords = function(words) {
+           postRecognizerJob({command: 'addWords', data: words},
+                        function() {feedGrammar(grammars, 0);});
+      };
+
+      // This initializes the recognizer. When it calls back, we add words
+      var initRecognizer = function() {
+          // You can pass parameters to the recognizer, such as : {command: 'initialize', data: [["-hmm", "my_model"], ["-fwdflat", "no"]]}
+          //postRecognizerJob({command: 'initialize'},
+          postRecognizerJob({command: 'initialize', data: [["-fwdflat", "no"], ["-dict", "cmudict.0.6d"], ["-lm", "en-us.lm.dmp"]]},
+                            function() {
+                                        if (recorder) recorder.recognizer = recognizer;
+                                        feedWords(wordList);
+                                       });
+      };
+
+      // When the page is loaded, we spawn a new recognizer worker and call getUserMedia to
+      // request access to the microphone
+      window.onload = function init() {
+        updateStatus("Initializing Web Audio and speech recognizer, waiting for approval to access your microphone");
+        callbackManager = new CallbackManager();
+        spawnWorker("js/recognizer.js", function(worker) {
+            // This is the onmessage function, once the worker is fully loaded
+            worker.onmessage = function(e) {
+                // This is the case when we have a callback id to be called
+                if (e.data.hasOwnProperty('id')) {
+                  var clb = callbackManager.get(e.data['id']);
+                  var data = {};
+                  if( e.data.hasOwnProperty('data')) data = e.data.data;
+                  if(clb) clb(data);
+                }
+                // This is a case when the recognizer has a new hypothesis
+                if (e.data.hasOwnProperty('hyp')) {
+                  var newHyp = e.data.hyp;
+                  if (e.data.hasOwnProperty('final') &&  e.data.final)
+                  newHyp = "Final: " + newHyp;
+                  updateHyp(newHyp);
+                }
+                // This is the case when we have an error
+                if (e.data.hasOwnProperty('status') && (e.data.status == "error")) {
+                  updateStatus("Error in " + e.data.command + " with code " + e.data.code);
+                }
+            };
+            // Once the worker is fully loaded, we can call the initialize function
+            initRecognizer();
+        });
+        // The following is to initialize Web Audio
+        try {
+          window.AudioContext = window.AudioContext || window.webkitAudioContext;
+          navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+          window.URL = window.URL || window.webkitURL;
+          audio_context = new AudioContext();
+        } catch (e) {
+          updateStatus("Error initializing Web Audio browser");
+        }
+        if (navigator.getUserMedia) navigator.getUserMedia({audio: true}, startUserMedia, function(e) {
+                                        updateStatus("No live audio input in this browser");
+                                    });
+        else updateStatus("No web audio support in this browser");
+
+      // Wiring JavaScript to the UI
+      var startBtn = document.getElementById('startBtn');
+      var stopBtn = document.getElementById('stopBtn');
+      startBtn.disabled = true;
+      stopBtn.disabled = true;
+      startBtn.onclick = startRecording;
+      stopBtn.onclick = stopRecording;
+      };
+
+       // This is the list of words that need to be added to the recognizer
+       // This follows the CMU dictionary format
+//      var wordList = [["ONE", "W AH N"], ["TWO", "T UW"], ["THREE", "TH R IY"], ["FOUR", "F AO R"], ["FIVE", "F AY V"], ["SIX", "S IH K S"], ["SEVEN", "S EH V AH N"], ["EIGHT", "EY T"], ["NINE", "N AY N"], ["ZERO", "Z IH R OW"], ["NEW-YORK", "N UW Y AO R K"], ["NEW-YORK-CITY", "N UW Y AO R K S IH T IY"], ["PARIS", "P AE R IH S"] , ["PARIS(2)", "P EH R IH S"], ["SHANGHAI", "SH AE NG HH AY"], ["SAN-FRANCISCO", "S AE N F R AE N S IH S K OW"], ["LONDON", "L AH N D AH N"], ["BERLIN", "B ER L IH N"], ["SUCKS", "S AH K S"], ["ROCKS", "R AA K S"], ["IS", "IH Z"], ["NOT", "N AA T"], ["GOOD", "G IH D"], ["GOOD(2)", "G UH D"], ["GREAT", "G R EY T"], ["WINDOWS", "W IH N D OW Z"], ["LINUX", "L IH N AH K S"], ["UNIX", "Y UW N IH K S"], ["MAC", "M AE K"], ["AND", "AE N D"], ["AND(2)", "AH N D"], ["O", "OW"], ["S", "EH S"], ["X", "EH K S"]];
+var wordList = [["ABANDON", "AH B AE N D AH N"], ["BEACH", "B IY CH"], ["BEHAVE", "B IH HH EY V"], ["LIKE", "L AY K"], ["UP", "AH P"], ["DOWN", "D AW N"], ["LIKE_THIS", "L AY K DH IH S"], ["FACEBOOK", "F EY S B UH K"], ["SCROLL", "S K R OW L"], ["SEARCH", "S ER CH"], ["SHARE", "SH EH R"], ["NEXT", "N EH K S"], ["PREVIOUS", "P R IY V IY AH S"], ["MARBLE", "M AA R B AH L"], ["NUMBER", "N AH M B ER"], ["SPHINX", "S F IH NG K S"], ["HELLO", "HH AH L OW"], ["MIZAR", "M AY Z AA R"], ["POLARIS", "P OW L EH R AH S"], ["POLICE", "P AH L IY S"], ["POISON", "P OY Z AH N"], ["MESSAGES", "M EH S AH JH AH Z"], ["EVENTS", "IH V EH N T S"], ["PHOTOS", "F OW T OW Z"], ["METALLICA", "M AH T AE L IH K AH"], ["GEORGIANA", "JH AO R JH IY AE N AH"], ["MIHAI", "M IY HH AY"], ["BOGDAN", "B AA G D AH N"], ["ALEXANDER", "AE L AH G Z AE N D ER"], ["ELENA", "EH L AH N AH"], ["VARGA", "V AA R G AH"], ["VOLMER", "V OW L M ER"], ["FIRST_GROUP", "F ER S T G R UW P"], ["SECOND_GROUP", "S EH K AH N G R UW P"], ["THIRD_GROUP", "TH ER D G R UW P"]];
+//var wordList = [["ABANDON", "AH B AE N D AH N"], ["BEACH", "B IY CH"], ["BEHAVE", "B IH HH EY V"], ["LIKE_THIS", "L AY K DH IH S"], ["FACEBOOK", "F EY S B UH K"], ["SCROLL", "S K R OW L"], ["SEARCH", "S ER CH"], ["NEXT", "N EH K S"], ["PREVIOUS", "P R IY V IY AH S"], ["MARBLE", "M AA R B AH L"], ["NUMBER", "N AH M B ER"], ["SPHINX", "S F IH NG K S"], ["HELLO", "HH AH L OW"], ["MIZAR", "M AY Z AA R"], ["POLARIS", "P OW L EH R AH S"], ["POLICE", "P AH L IY S"], ["POISON", "P OY Z AH N"], ["MESSAGES", "M EH S AH JH AH Z"], ["EVENTS", "IH V EH N T S"], ["PHOTOS", "F OW T OW Z"], ["METALLICA", "M AH T AE L IH K AH"], ["GEORGIANA", "JH AO R JH IY AE N AH"], ["MIHAI", "M IY HH AY"], ["BOGDAN", "B AA G D AH N"], ["ALEXANDER", "AE L AH G Z AE N D ER"], ["ELENA", "EH L AH N AH"], ["VARGA", "V AA R G AH"], ["VOLMER", "V OW L M ER"], ["YES", "Y EH S"], ["NO", "N OW"]];
+
+      // This grammar recognizes digits
+//      var grammarDigits = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "ONE"},{from: 0, to: 0, word: "TWO"},{from: 0, to: 0, word: "THREE"},{from: 0, to: 0, word: "FOUR"},{from: 0, to: 0, word: "FIVE"},{from: 0, to: 0, word: "SIX"},{from: 0, to: 0, word: "SEVEN"},{from: 0, to: 0, word: "EIGHT"},{from: 0, to: 0, word: "NINE"},{from: 0, to: 0, word: "ZERO"}]};
+      // This grammar recognizes a few cities names
+ //     var grammarCities = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "NEW-YORK"}, {from: 0, to: 0, word: "NEW-YORK-CITY"}, {from: 0, to: 0, word: "PARIS"}, {from: 0, to: 0, word: "SHANGHAI"}, {from: 0, to: 0, word: "SAN-FRANCISCO"}, {from: 0, to: 0, word: "LONDON"}, {from: 0, to: 0, word: "BERLIN"}]};
+      // This is to play with beloved or belated OSes
+//      var grammarOses = {numStates: 7, start: 0, end: 6, transitions: [{from: 0, to: 1, word: "WINDOWS"}, {from: 0, to: 1, word: "LINUX"}, {from: 0, to: 1, word: "UNIX"}, {from: 1, to: 2, word: "IS"}, {from: 2, to: 2, word: "NOT"}, {from: 2, to: 6, word: "GOOD"}, {from: 2, to: 6, word: "GREAT"}, {from: 1, to: 6, word: "ROCKS"}, {from: 1, to: 6, word: "SUCKS"}, {from: 0, to: 4, word: "MAC"}, {from: 4, to: 5, word: "O"}, {from: 5, to: 3, word: "S"}, {from: 3, to: 1, word: "X"}, {from: 6, to: 0, word: "AND"}]};
+//      var grammars = [{title: "OSes", g: grammarOses}, {title: "Digits", g: grammarDigits}, {title: "Cities", g: grammarCities}];
+//      var grammarProba = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "DISPLAY"}]};
+//      var grammarProba = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "ONE"},{from: 0, to: 0, word: "TWO"},{from: 0, to: 0, word: "THREE"},{from: 0, to: 0, word: "FOUR"},{from: 0, to: 0, word: "FIVE"},{from: 0, to: 0, word: "SIX"},{from: 0, to: 0, word: "SEVEN"},{from: 0, to: 0, word: "EIGHT"},{from: 0, to: 0, word: "NINE"},{from: 0, to: 0, word: "ZERO"},{from: 0, to: 0, word: "NEW-YORK"}, {from: 0, to: 0, word: "NEW-YORK-CITY"}, {from: 0, to: 0, word: "PARIS"}, {from: 0, to: 0, word: "SHANGHAI"}, {from: 0, to: 0, word: "SAN-FRANCISCO"}, {from: 0, to: 0, word: "LONDON"}, {from: 0, to: 0, word: "BERLIN"}]};
+var grammarProba = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "ABANDON"}, {from: 0, to: 0, word: "BEACH"}, {from: 0, to: 0, word: "BEHAVE"}, {from: 0, to: 0, word: "LIKE"}, {from: 0, to: 0, word: "UP"}, {from: 0, to: 0, word: "DOWN"}, {from: 0, to: 0, word: "LIKE_THIS"}, {from: 0, to: 0, word: "FACEBOOK"}, {from: 0, to: 0, word: "SCROLL"}, {from: 0, to: 0, word: "SEARCH"}, {from: 0, to: 0, word: "SHARE"}, {from: 0, to: 0, word: "NEXT"}, {from: 0, to: 0, word: "PREVIOUS"}, {from: 0, to: 0, word: "MARBLE"}, {from: 0, to: 0, word: "NUMBER"}, {from: 0, to: 0, word: "SPHINX"}, {from: 0, to: 0, word: "HELLO"}, {from: 0, to: 0, word: "MIZAR"}, {from: 0, to: 0, word: "POLARIS"}, {from: 0, to: 0, word: "POLICE"}, {from: 0, to: 0, word: "POISON"}, {from: 0, to: 0, word: "MESSAGES"}, {from: 0, to: 0, word: "EVENTS"}, {from: 0, to: 0, word: "PHOTOS"}, {from: 0, to: 0, word: "METALLICA"}, {from: 0, to: 0, word: "GEORGIANA"}, {from: 0, to: 0, word: "MIHAI"}, {from: 0, to: 0, word: "BOGDAN"}, {from: 0, to: 0, word: "ALEXANDER"}, {from: 0, to: 0, word: "ELENA"}, {from: 0, to: 0, word: "VARGA"}, {from: 0, to: 0, word: "VOLMER"}, {from: 0, to: 0, word: "FIRST_GROUP"}, {from: 0, to: 0, word: "SECOND_GROUP"}, {from: 0, to: 0, word: "THIRD_GROUP"}]};
+//var grammarProba = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "ABANDON"}, {from: 0, to: 0, word: "BEACH"}, {from: 0, to: 0, word: "BEHAVE"}, {from: 0, to: 0, word: "LIKE_THIS"}, {from: 0, to: 0, word: "FACEBOOK"}, {from: 0, to: 0, word: "SCROLL"}, {from: 0, to: 0, word: "SEARCH"}, {from: 0, to: 0, word: "NEXT"}, {from: 0, to: 0, word: "PREVIOUS"}, {from: 0, to: 0, word: "MARBLE"}, {from: 0, to: 0, word: "NUMBER"}, {from: 0, to: 0, word: "SPHINX"}, {from: 0, to: 0, word: "HELLO"}, {from: 0, to: 0, word: "MIZAR"}, {from: 0, to: 0, word: "POLARIS"}, {from: 0, to: 0, word: "POLICE"}, {from: 0, to: 0, word: "POISON"}, {from: 0, to: 0, word: "MESSAGES"}, {from: 0, to: 0, word: "EVENTS"}, {from: 0, to: 0, word: "PHOTOS"}, {from: 0, to: 0, word: "METALLICA"}, {from: 0, to: 0, word: "GEORGIANA"}, {from: 0, to: 0, word: "MIHAI"}, {from: 0, to: 0, word: "BOGDAN"}, {from: 0, to: 0, word: "ALEXANDER"}, {from: 0, to: 0, word: "ELENA"}, {from: 0, to: 0, word: "VARGA"}, {from: 0, to: 0, word: "VOLMER"}]};
+//var grammarConfirm = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "YES"}, {from: 0, to: 0, word: "NO"}]};
+var grammars = [{title: "proba", g: grammarProba}];
+      var grammarIds = [];
+    </script>
+    <!-- These are the two JavaScript files you must load in the HTML,
+    The recognizer is loaded through a Web Worker -->
+    <script src="js/audioRecorder.js"></script>
+    <script src="js/callbackManager.js"></script>
+  </body>
+</html>

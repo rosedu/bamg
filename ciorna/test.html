@@ -22,8 +22,11 @@
 
     <script>
       // These will be initialized lated
+//      var on_sphinx = 0;
       var recognizer, recorder, callbackManager, audio_context;
-      var validation = [["SPHINX", 1], ["FACEBOOK", 0], ["SCROLL", 0], ["LIKE", 0], ["SHARE", 0], ["SEARCH", 0], ["PHOTOS", 0]];
+      var validation = [["SPHINX", 1], ["FACEBOOK", 0], ["UP", 0], ["LIKE", 0], ["SHARE", 0], ["DOWN", 0], ["PHOTOS", 0], ["OK", 0], ["ZOOM", 0], ["BACK", 0], ["CANCEL", 0], ["PROFILE", 0]];
+      // var validation = [["SPHINX", 1], ["FACEBOOK", 1], ["SCROLL_UP", 1], ["LIKE", 1], ["SHARE", 1], ["SEARCH", 1], ["PHOTOS", 1], ["OK", 1], ["ZOOM", 1], ["BACK", 1], ["CANCEL", 1], ["PROFILE", 1], 
+      // ["SCROLL_DOWN", 1]];
       // Only when both recorder and recognizer do we have a ready application
       var recorderReady = recognizerReady = false;
 
@@ -83,161 +86,428 @@
 
        function validare (hyp)
        {
-        aux_n = hyp.indexOf ("SPHINX");
+        var index_scroll = 0;
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("SPHINX");
         if (aux_n >= 0 && validation[0][1] > 0)
         {
-            context_generator (hyp, "SPHINX");
-            recorder.stop ();
-            recorder.start ();
+            //context_generator (hyp, "SPHINX");
+//            recorder.stop ();
+  //          recorder.start ();
+                  validation[1][1] = 1;
+                  validation[2][1] = 0;
+                  validation[3][1] = 0;
+                  validation[4][1] = 0;
+                  validation[5][1] = 0;
+                  validation[6][1] = 0;
+                  validation[7][1] = 0;
+                  validation[8][1] = 0;
+                  validation[9][1] = 0;
+                  validation[10][1] = 0;
+                  validation[11][1] = 0;
         }
         
-        aux_n = hyp.indexOf ("FACEBOOK");
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("FACEBOOK");
         if (aux_n >= 0 && validation[1][1] > 0)
         {
-            context_generator (hyp, "FACEBOOK");
-            recorder.stop ();
-            recorder.start ();
+           // context_generator (hyp, "FACEBOOK");
+//            recorder.stop ();
+  //          recorder.start ();
+            parentPage.location="https://www.facebook.com";
+                  validation[1][1] = 1;
+                  validation[2][1] = 1;
+                  validation[3][1] = 1;
+                  validation[4][1] = 1;
+                  validation[5][1] = 1;
+                  validation[6][1] = 1;
+                  validation[7][1] = 0;
+                  validation[8][1] = 0;
+                  validation[9][1] = 0;
+                  validation[10][1] = 0;
+                  validation[11][1] = 1;
 
         }
         
-        aux_n = hyp.indexOf ("SCROLL");
-        if (aux_n >= 0 && validation [2][1] > 0)
-        {
-            context_generator (hyp, "SCROLL");
-            recorder.stop ();
-            recorder.start ();
-        }
+        var command = getLastWord(hyp);
+        // aux_n = command.indexOf ("SCROLL");
+        // if (aux_n >= 0 && validation [2][1] > 0)
+        // {
+        //     context_generator (hyp, "SCROLL");
+        //     recorder.stop ();
+        //     recorder.start ();
+        // }
         
-        aux_n = hyp.indexOf ("LIKE");
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("LIKE");
         if (aux_n >= 0 && validation [3][1] > 0)
         {
-            context_generator (hyp, "LIKE");
-            recorder.stop ();
-            recorder.start ();
+         //   context_generator (hyp, "LIKE");
+  //          recorder.stop ();
+    //        recorder.start ();
+            a =(parentPage.document);  
+            $(a).find('a.UFILikeLink').get(index_scroll).click();
+            // parentPage.document.find('a.UFILikeLink').get(0).click();
 
         }
 
-        aux_n = hyp.indexOf ("SHARE");
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("SHARE");
         if (aux_n >= 0 && validation [4][1] > 0)
         {
-            context_generator (hyp, "SHARE");
-            recorder.stop ();
-            recorder.start ();
+            //context_generator (hyp, "SHARE");
+   //         recorder.stop ();
+   //         recorder.start ();
+            a =(parentPage.document);  
+            $(a).find('a.share_action_link').get(index_scroll).click();
+                  validation[1][1] = 1;
+                  validation[2][1] = 0;
+                  validation[3][1] = 0;
+                  validation[4][1] = 0;
+                  validation[5][1] = 0;
+                  validation[6][1] = 0;
+                  validation[7][1] = 1;
+                  validation[8][1] = 0;
+                  validation[9][1] = 0;
+                  validation[10][1] = 1;
+                  validation[11][1] = 0;
 
         }
 
-        aux_n = hyp.indexOf ("SEARCH");
-        if (aux_n >= 0 && validation [5][1] > 0)
-        {
-            context_generator (hyp, "SEARCH");
-            recorder.stop ();
-            recorder.start ();
-
-        }
-
-        aux_n = hyp.indexOf ("PHOTOS");
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("PHOTOS");
         if (aux_n >= 0 && validation [6][1] > 0)
         {
-            context_generator (hyp, "PHOTOS");
-            recorder.stop ();
-            recorder.start ();
+            //context_generator (hyp, "PHOTOS");
+     //       recorder.stop ();
+     //       recorder.start ();
+            link = parentPage.location.href; 
+            parentPage.location=link.split('?')[0]+'/photos';
+                  validation[1][1] = 1;
+                  validation[2][1] = 0;
+                  validation[3][1] = 0;
+                  validation[4][1] = 0;
+                  validation[5][1] = 0;
+                  validation[6][1] = 0;
+                  validation[7][1] = 0;
+                  validation[8][1] = 1;
+                  validation[9][1] = 1;
+                  validation[10][1] = 0;
+                  validation[11][1] = 0;
 
         }
+
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("ZOOM");
+        if (aux_n >= 0 && validation [8][1] > 0)
+        {
+            //context_generator (hyp, "ZOOM");
+      //      recorder.stop ();
+      //      recorder.start ();
+            a =(parentPage.document);  
+            $(a).find('a.uiMediaThumb._6i9.uiMediaThumbMedium').get(0).click();
+                  validation[1][1] = 1;
+                  validation[2][1] = 0;
+                  validation[3][1] = 0;
+                  validation[4][1] = 0;
+                  validation[5][1] = 0;
+                  validation[6][1] = 0;
+                  validation[7][1] = 0;
+                  validation[8][1] = 0;
+                  validation[9][1] = 1;
+                  validation[10][1] = 0;
+                  validation[11][1] = 0;
+
+        }
+
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("BACK");
+        if (aux_n >= 0 && validation [9][1] > 0)
+        {
+            //context_generator (hyp, "BACK");
+      //      recorder.stop ();
+      //      recorder.start ();
+            a =(parentPage.document);
+            $(a).find('a.closeTheater').get(0).click();
+                  validation[1][1] = 1;
+                  validation[2][1] = 0;
+                  validation[3][1] = 0;
+                  validation[4][1] = 0;
+                  validation[5][1] = 0;
+                  validation[6][1] = 0;
+                  validation[7][1] = 0;
+                  validation[8][1] = 1;
+                  validation[9][1] = 1;
+                  validation[10][1] = 0;
+                  validation[11][1] = 0;
+
+        }
+
+        
+
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("DOWN");
+        if (aux_n >= 0 && validation [12][1] > 0)
+        {
+            //context_generator (hyp, "SCROLL_DOWN");
+      //      recorder.stop ();
+      //      recorder.start ();
+            
+            a =(parentPage.document); 
+            post = $(a).find('div.mainWrapper').eq(index_scroll);
+             $(parentPage.window).scrollTo(post);
+             index_scroll++;
+                  validation[1][1] = 1;
+                  validation[2][1] = 1;
+                  validation[3][1] = 1;
+                  validation[4][1] = 1;
+                  validation[5][1] = 1;
+                  validation[6][1] = 1;
+                  validation[7][1] = 0;
+                  validation[8][1] = 0;
+                  validation[9][1] = 0;
+                  validation[10][1] = 0;
+                  validation[11][1] = 1;
+
+
+        }
+
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("UP");
+        if (aux_n >= 0 && validation [2][1] > 0)
+        {
+          //  context_generator (hyp, "SCROLL_UP");
+      //      recorder.stop ();
+      //      recorder.start ();
+            if (index_scroll > 0) {
+              index_scroll--;
+            }
+            a =(parentPage.document); 
+            post = $(a).find('div.mainWrapper').eq(index_scroll);
+             $(parentPage.window).scrollTo(post);
+                  validation[1][1] = 1;
+                  validation[2][1] = 1;
+                  validation[3][1] = 1;
+                  validation[4][1] = 1;
+                  validation[5][1] = 1;
+                  validation[6][1] = 1;
+                  validation[7][1] = 0;
+                  validation[8][1] = 0;
+                  validation[9][1] = 0;
+                  validation[10][1] = 0;
+                  validation[11][1] = 1;
+
+
+        }
+
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("OK");
+        if (aux_n >= 0 && validation [7][1] > 0)
+        {
+        //    context_generator (hyp, "OK");
+      //      recorder.stop ();
+      //      recorder.start ();
+            a =(parentPage.document);  
+            $(a).find('button.layerConfirm').click();
+                  validation[1][1] = 1;
+                  validation[2][1] = 1;
+                  validation[3][1] = 1;
+                  validation[4][1] = 1;
+                  validation[5][1] = 1;
+                  validation[6][1] = 1;
+                  validation[7][1] = 0;
+                  validation[8][1] = 0;
+                  validation[9][1] = 0;
+                  validation[10][1] = 0;
+                  validation[11][1] = 1;
+
+
+        }
+_
+
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("CANCEL");
+        if (aux_n >= 0 && validation [10][1] > 0)
+        {
+      //      context_generator (hyp, "CANCEL");
+      //      recorder.stop ();
+      //      recorder.start ();
+            a =(parentPage.document);  
+            $(a).find('button.layerCancel').click();
+                  validation[1][1] = 1;
+                  validation[2][1] = 1;
+                  validation[3][1] = 1;
+                  validation[4][1] = 1;
+                  validation[5][1] = 1;
+                  validation[6][1] = 1;
+                  validation[7][1] = 0;
+                  validation[8][1] = 0;
+                  validation[9][1] = 0;
+                  validation[10][1] = 0;
+                  validation[11][1] = 1;
+
+
+        }
+
+        var command = getLastWord(hyp);
+        aux_n = command.indexOf ("PROFILE");
+        if (aux_n >= 0 && validation [11][1] > 0)
+        {
+    //        context_generator (hyp, "PROFILE");
+      //      recorder.stop ();
+       //     recorder.start ();
+            a =(parentPage.document); 
+            link=$(a).find('div.mainWrapper').eq(0).find('div a:first').attr('href');
+            parentPage.location = link;
+                  validation[1][1] = 1;
+                  validation[2][1] = 0;
+                  validation[3][1] = 0;
+                  validation[4][1] = 0;
+                  validation[5][1] = 0;
+                  validation[6][1] = 1;
+                  validation[7][1] = 0;
+                  validation[8][1] = 0;
+                  validation[9][1] = 0;
+                  validation[10][1] = 0;
+                  validation[11][1] = 0;
+
+
+        }
+
+
        }
 
-        function context_generator (hyp, command)
-        {
-            text = document.URL;
-            aux_text = text.indexOf ("facebook");
+      // function context_generator (hyp, command) 
+      //   {
+      //       text = document.URL;
+      //       aux_text = text.indexOf ("facebook");
             
-            if ("SPHINX" == command && aux_text < 0)//sphinx fara facebook
-            {
-                validation[1][1] = 1;
-                validation[2][1] = 1;
-                validation[3][1] = 0;
-                validation[4][1] = 0;
-                validation[5][1] = 0;
-                validation[6][1] = 0
-            }
+      //       if ("SPHINX" == command && aux_text < 0)//sphinx fara facebook
+      //       {
+      //       //  if (on_sphinx == 0) {
+      //         //    on_sphinx = 1;
+      //             validation[1][1] = 1;
+      //             validation[2][1] = 0;
+      //             validation[3][1] = 0;
+      //             validation[4][1] = 0;
+      //             validation[5][1] = 0;
+      //             validation[6][1] = 0;
+      //             validation[7][1] = 0;
+      //             validation[8][1] = 0;
+      //             validation[9][1] = 0;
+      //             validation[10][1] = 0;
+      //             validation[11][1] = 0;
+      //           /*  } else {
+      //             on_sphinx = 0;
+      //             validation[1][1] = 0;
+      //             validation[2][1] = 0;
+      //             validation[3][1] = 0;
+      //             validation[4][1] = 0;
+      //             validation[5][1] = 0;
+      //             validation[6][1] = 0
+      //           }*/
+      //       }
             
-            else if ("SPHINX" == command)//sphinx cu facebook
-            {
-                validation[2][1] = 1;
-                validation[3][1] = 1;
-                validation[4][1] = 1;
-                validation[5][1] = 1;
-                validation[1][1] = 1;
-                validation[6][1] = 0
-            }
+      //       else if ("SPHINX" == command)//sphinx cu facebook
+      //       {
+      //   //      if (on_sphinx == 0) {
+      //      //       on_sphinx = 1;
+      //             validation[1][1] = 1;
+      //             validation[2][1] = 1;
+      //             validation[3][1] = 1;
+      //             validation[4][1] = 1;
+      //             validation[5][1] = 1;
+      //             validation[6][1] = 1;
+      //             validation[7][1] = 0;
+      //             validation[8][1] = 0;
+      //             validation[9][1] = 0;
+      //             validation[10][1] = 0;
+      //             validation[11][1] = 1;
+      //        /*     } else {
+      //             on_sphinx = 0;
+      //             validation[1][1] = 0;
+      //             validation[2][1] = 0;
+      //             validation[3][1] = 0;
+      //             validation[4][1] = 0;
+      //             validation[5][1] = 0;
+      //             validation[6][1] = 0
+      //           }*/
+      //       }
 
-            aux_text = text.indexOf ("photo");
-            if (aux_text >= 0)
-            {
-                validation[1][1] = 1;
-                validation[2][1] = 0;
-                validation[3][1] = 1;
-                validation[4][1] = 1;
-                validation[5][1] = 0;
-                validation[6][1] = 0;
-            }
+      //       aux_text = text.indexOf ("photo");
+      //       if (aux_text >= 0)
+      //       {
+      //           validation[1][1] = 1;
+      //           validation[2][1] = 0;
+      //           validation[3][1] = 1;
+      //           validation[4][1] = 1;
+      //           validation[5][1] = 0;
+      //           validation[6][1] = 0;
+      //       }
             
-            aux_text = text.indexOf ("photos");
-            if (aux_text >= 0)
-            {
-                validation[1][1] = 1;
-                validation[2][1] = 1;
-                validation[3][1] = 0;
-                validation[4][1] = 0;
-                validation[5][1] = 0;
-                validation[6][1] = 0;
-            }
+      //       aux_text = text.indexOf ("photos");
+      //       if (aux_text >= 0)
+      //       {
+      //           validation[1][1] = 1;
+      //           validation[2][1] = 1;
+      //           validation[3][1] = 0;
+      //           validation[4][1] = 0;
+      //           validation[5][1] = 0;
+      //           validation[6][1] = 0;
+      //       }
 
-            aux_text = text.indexOf ("mihai");
-            if (aux_text >= 0)
-            {
-                validation[1][1] = 1;
-                validation[2][1] = 1;
-                validation[3][1] = 0;
-                validation[4][1] = 0;
-                validation[5][1] = 0;
-                validation[6][1] = 0;
-            }
+      //       aux_text = text.indexOf ("mihai");
+      //       if (aux_text >= 0)
+      //       {
+      //           validation[1][1] = 1;
+      //           validation[2][1] = 1;
+      //           validation[3][1] = 0;
+      //           validation[4][1] = 0;
+      //           validation[5][1] = 0;
+      //           validation[6][1] = 0;
+      //       }
 
             
-            if ("FACEBOOK" == command)//facebook
-            {
-                validation[2][1] = 1;
-                validation[3][1] = 1;
-                validation[4][1] = 1;
-                validation[5][1] = 1;
-                validation[1][1] = 1;
-                validation[6][1] = 0;
-            }
+      //       if ("FACEBOOK" == command)//facebook
+      //       {
+      //           validation[2][1] = 1;
+      //           validation[3][1] = 1;
+      //           validation[4][1] = 1;
+      //           validation[5][1] = 1;
+      //           validation[1][1] = 1;
+      //           validation[6][1] = 1;
+      //           validation[7][1] = 0;
+      //           validation[8][1] = 1;
+      //           validation[9][1] = 0;
+      //           validation[10][1] = 0;
+      //           validation[11][1] = 0;
+      //           validation[12][1] = 1;
+      //       }
             
-            if ("SCROLL" == command) //scroll
-            {
-                validation[6][1] = 0;
-            }
+      //       if ("SCROLL" == command) //scroll
+      //       {
+      //           validation[6][1] = 0;
+      //       }
 
-            if ("LIKE" == command) //like
-            {
-                validation[6][1] = 0;
-            }
+      //       if ("LIKE" == command) //like
+      //       {
+      //           validation[6][1] = 0;
+      //       }
 
-            if ("SHARE" == command) // share
-            {
-                validation[6][1] = 0;
-            }
+      //       if ("SHARE" == command) // share
+      //       {
+      //           validation[6][1] = 0;
+      //       }
 
-            if ("SEARCH" == command) // search
-            {
-                validation[6][1] = 0;
-            }
-            if ("PHOTOS" == command)
-            {
-                validation[6][1] = 0;
-            }
-        }
+      //       if ("SEARCH" == command) // search
+      //       {
+      //           validation[6][1] = 0;
+      //       }
+      //       if ("PHOTOS" == command)
+      //       {
+      //           validation[6][1] = 0;
+      //       }
+      //   }
 
       // This updates the UI when the app might get ready
       // Only when both recorder and recognizer are ready do we enable the buttons
@@ -390,7 +660,8 @@
        // This is the list of words that need to be added to the recognizer
        // This follows the CMU dictionary format
 //      var wordList = [["ONE", "W AH N"], ["TWO", "T UW"], ["THREE", "TH R IY"], ["FOUR", "F AO R"], ["FIVE", "F AY V"], ["SIX", "S IH K S"], ["SEVEN", "S EH V AH N"], ["EIGHT", "EY T"], ["NINE", "N AY N"], ["ZERO", "Z IH R OW"], ["NEW-YORK", "N UW Y AO R K"], ["NEW-YORK-CITY", "N UW Y AO R K S IH T IY"], ["PARIS", "P AE R IH S"] , ["PARIS(2)", "P EH R IH S"], ["SHANGHAI", "SH AE NG HH AY"], ["SAN-FRANCISCO", "S AE N F R AE N S IH S K OW"], ["LONDON", "L AH N D AH N"], ["BERLIN", "B ER L IH N"], ["SUCKS", "S AH K S"], ["ROCKS", "R AA K S"], ["IS", "IH Z"], ["NOT", "N AA T"], ["GOOD", "G IH D"], ["GOOD(2)", "G UH D"], ["GREAT", "G R EY T"], ["WINDOWS", "W IH N D OW Z"], ["LINUX", "L IH N AH K S"], ["UNIX", "Y UW N IH K S"], ["MAC", "M AE K"], ["AND", "AE N D"], ["AND(2)", "AH N D"], ["O", "OW"], ["S", "EH S"], ["X", "EH K S"]];
-var wordList = [["ABANDON", "AH B AE N D AH N"], ["BEACH", "B IY CH"], ["BEHAVE", "B IH HH EY V"], ["LIKE_THIS", "L AY K DH IH S"], ["FACEBOOK", "F EY S B UH K"], ["SCROLL", "S K R OW L"], ["SEARCH", "S ER CH"], ["NEXT", "N EH K S"], ["PREVIOUS", "P R IY V IY AH S"], ["MARBLE", "M AA R B AH L"], ["NUMBER", "N AH M B ER"], ["SPHINX", "S F IH NG K S"], ["HELLO", "HH AH L OW"], ["MIZAR", "M AY Z AA R"], ["POLARIS", "P OW L EH R AH S"], ["POLICE", "P AH L IY S"], ["POISON", "P OY Z AH N"], ["MESSAGES", "M EH S AH JH AH Z"], ["EVENTS", "IH V EH N T S"], ["PHOTOS", "F OW T OW Z"], ["METALLICA", "M AH T AE L IH K AH"], ["GEORGIANA", "JH AO R JH IY AE N AH"], ["MIHAI", "M IY HH AY"], ["BOGDAN", "B AA G D AH N"], ["ALEXANDER", "AE L AH G Z AE N D ER"], ["ELENA", "EH L AH N AH"], ["VARGA", "V AA R G AH"], ["VOLMER", "V OW L M ER"], ["YES", "Y EH S"], ["NO", "N OW"]];
+//var wordList = [["ABANDON", "AH B AE N D AH N"], ["BEACH", "B IY CH"], ["BEHAVE", "B IH HH EY V"], ["LIKE", "L AY K"], ["LIKE_THIS", "L AY K DH IH S"], ["FACEBOOK", "F EY S B UH K"], ["SCROLL_UP", "S K R OW L AH P"], ["SCROLL_DOWN", "S K R OW L AH P D AW N"], ["SEARCH", "S ER CH"], ["SHARE", "SH EH R"], ["NEXT", "N EH K S"], ["PROFILE", "P R OW F AY L"], ["CANCEL", "K AE N S AH L"], ["ZOOM", "Z UW M"], ["BACK", "B AE K"], ["OK", "OW K EY"], ["PREVIOUS", "P R IY V IY AH S"], ["MARBLE", "M AA R B AH L"], ["NUMBER", "N AH M B ER"], ["SPHINX", "S F IH NG K S"], ["HELLO", "HH AH L OW"], ["MIZAR", "M AY Z AA R"], ["POLARIS", "P OW L EH R AH S"], ["POLICE", "P AH L IY S"], ["POISON", "P OY Z AH N"], ["MESSAGES", "M EH S AH JH AH Z"], ["EVENTS", "IH V EH N T S"], ["PHOTOS", "F OW T OW Z"], ["METALLICA", "M AH T AE L IH K AH"], ["GEORGIANA", "JH AO R JH IY AE N AH"], ["MIHAI", "M IY HH AY"], ["BOGDAN", "B AA G D AH N"], ["ALEXANDER", "AE L AH G Z AE N D ER"], ["ELENA", "EH L AH N AH"], ["VARGA", "V AA R G AH"], ["VOLMER", "V OW L M ER"]];
+var wordList = [["ABANDON", "AH B AE N D AH N"], ["BEACH", "B IY CH"], ["BEHAVE", "B IH HH EY V"], ["LIKE", "L AY K"], ["LIKE_THIS", "L AY K DH IH S"], ["FACEBOOK", "F EY S B UH K"], ["UP", "AH P"], ["DOWN", "D AW N"], ["SEARCH", "S ER CH"], ["SHARE", "SH EH R"], ["NEXT", "N EH K S"], ["PROFILE", "P R OW F AY L"], ["CANCEL", "K AE N S AH L"], ["ZOOM", "Z UW M"], ["BACK", "B AE K"], ["OK", "OW K EY"], ["PREVIOUS", "P R IY V IY AH S"], ["MARBLE", "M AA R B AH L"], ["NUMBER", "N AH M B ER"], ["SPHINX", "S F IH NG K S"], ["HELLO", "HH AH L OW"], ["MIZAR", "M AY Z AA R"], ["POLARIS", "P OW L EH R AH S"], ["POLICE", "P AH L IY S"], ["POISON", "P OY Z AH N"], ["MESSAGES", "M EH S AH JH AH Z"], ["EVENTS", "IH V EH N T S"], ["METALLICA", "M AH T AE L IH K AH"], ["GEORGIANA", "JH AO R JH IY AE N AH"], ["MIHAI", "M IY HH AY"], ["BOGDAN", "B AA G D AH N"], ["ALEXANDER", "AE L AH G Z AE N D ER"], ["ELENA", "EH L AH N AH"], ["VARGA", "V AA R G AH"], ["VOLMER", "V OW L M ER"]];
 
       // This grammar recognizes digits
 //      var grammarDigits = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "ONE"},{from: 0, to: 0, word: "TWO"},{from: 0, to: 0, word: "THREE"},{from: 0, to: 0, word: "FOUR"},{from: 0, to: 0, word: "FIVE"},{from: 0, to: 0, word: "SIX"},{from: 0, to: 0, word: "SEVEN"},{from: 0, to: 0, word: "EIGHT"},{from: 0, to: 0, word: "NINE"},{from: 0, to: 0, word: "ZERO"}]};
@@ -401,14 +672,15 @@ var wordList = [["ABANDON", "AH B AE N D AH N"], ["BEACH", "B IY CH"], ["BEHAVE"
 //      var grammars = [{title: "OSes", g: grammarOses}, {title: "Digits", g: grammarDigits}, {title: "Cities", g: grammarCities}];
 //      var grammarProba = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "DISPLAY"}]};
 //      var grammarProba = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "ONE"},{from: 0, to: 0, word: "TWO"},{from: 0, to: 0, word: "THREE"},{from: 0, to: 0, word: "FOUR"},{from: 0, to: 0, word: "FIVE"},{from: 0, to: 0, word: "SIX"},{from: 0, to: 0, word: "SEVEN"},{from: 0, to: 0, word: "EIGHT"},{from: 0, to: 0, word: "NINE"},{from: 0, to: 0, word: "ZERO"},{from: 0, to: 0, word: "NEW-YORK"}, {from: 0, to: 0, word: "NEW-YORK-CITY"}, {from: 0, to: 0, word: "PARIS"}, {from: 0, to: 0, word: "SHANGHAI"}, {from: 0, to: 0, word: "SAN-FRANCISCO"}, {from: 0, to: 0, word: "LONDON"}, {from: 0, to: 0, word: "BERLIN"}]};
-var grammarProba = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "ABANDON"}, {from: 0, to: 0, word: "BEACH"}, {from: 0, to: 0, word: "BEHAVE"}, {from: 0, to: 0, word: "LIKE_THIS"}, {from: 0, to: 0, word: "FACEBOOK"}, {from: 0, to: 0, word: "SCROLL"}, {from: 0, to: 0, word: "SEARCH"}, {from: 0, to: 0, word: "NEXT"}, {from: 0, to: 0, word: "PREVIOUS"}, {from: 0, to: 0, word: "MARBLE"}, {from: 0, to: 0, word: "NUMBER"}, {from: 0, to: 0, word: "SPHINX"}, {from: 0, to: 0, word: "HELLO"}, {from: 0, to: 0, word: "MIZAR"}, {from: 0, to: 0, word: "POLARIS"}, {from: 0, to: 0, word: "POLICE"}, {from: 0, to: 0, word: "POISON"}, {from: 0, to: 0, word: "MESSAGES"}, {from: 0, to: 0, word: "EVENTS"}, {from: 0, to: 0, word: "PHOTOS"}, {from: 0, to: 0, word: "METALLICA"}, {from: 0, to: 0, word: "GEORGIANA"}, {from: 0, to: 0, word: "MIHAI"}, {from: 0, to: 0, word: "BOGDAN"}, {from: 0, to: 0, word: "ALEXANDER"}, {from: 0, to: 0, word: "ELENA"}, {from: 0, to: 0, word: "VARGA"}, {from: 0, to: 0, word: "VOLMER"}]};
-var grammarConfirm = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "YES"}, {from: 0, to: 0, word: "NO"}]};
-var grammars = [{title: "confirm", g:grammarConfirm}, {title: "proba", g: grammarProba}];
+var grammarProba = {numStates: 1, start: 0, end: 0, transitions: [{from: 0, to: 0, word: "ABANDON"}, {from: 0, to: 0, word: "BEACH"}, {from: 0, to: 0, word: "BEHAVE"}, {from: 0, to: 0, word: "LIKE"}, {from: 0, to: 0, word: "LIKE_THIS"}, {from: 0, to: 0, word: "FACEBOOK"}, {from: 0, to: 0, word: "UP"}, {from: 0, to: 0, word: "DOWN"}, {from: 0, to: 0, word: "SEARCH"}, {from: 0, to: 0, word: "SHARE"}, {from: 0, to: 0, word: "NEXT"}, {from: 0, to: 0, word: "PROFILE"}, {from: 0, to: 0, word: "CANCEL"}, {from: 0, to: 0, word: "ZOOM"}, {from: 0, to: 0, word: "BACK"}, {from: 0, to: 0, word: "OK"}, {from: 0, to: 0, word: "PREVIOUS"}, {from: 0, to: 0, word: "MARBLE"}, {from: 0, to: 0, word: "NUMBER"}, {from: 0, to: 0, word: "SPHINX"}, {from: 0, to: 0, word: "HELLO"}, {from: 0, to: 0, word: "MIZAR"}, {from: 0, to: 0, word: "POLARIS"}, {from: 0, to: 0, word: "POLICE"}, {from: 0, to: 0, word: "POISON"}, {from: 0, to: 0, word: "MESSAGES"}, {from: 0, to: 0, word: "EVENTS"}, {from: 0, to: 0, word: "METALLICA"}, {from: 0, to: 0, word: "GEORGIANA"}, {from: 0, to: 0, word: "MIHAI"}, {from: 0, to: 0, word: "BOGDAN"}, {from: 0, to: 0, word: "ALEXANDER"}, {from: 0, to: 0, word: "ELENA"}, {from: 0, to: 0, word: "VARGA"}, {from: 0, to: 0, word: "VOLMER"}]};
+var grammars = [{title: "proba", g: grammarProba}];
       var grammarIds = [];
     </script>
     <!-- These are the two JavaScript files you must load in the HTML,
     The recognizer is loaded through a Web Worker -->
     <script src="js/audioRecorder.js"></script>
     <script src="js/callbackManager.js"></script>
+    <script src="js/jquery.js"></script>
+    <script src="js/scrollto.js"></script>
   </body>
 </html>
